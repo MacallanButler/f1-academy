@@ -40,5 +40,8 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "tailwindcss": "^4.1.18"
+  },
+  "overrides": {
+    "tailwindcss": "^4.1.18"
   }
 }
