@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { ChevronRight, BookOpen, Eye, Trophy, Award } from 'lucide-react';
+import { ChevronRight, BookOpen, Eye, Trophy, Flag, Zap } from 'lucide-react';
 
-// Main App Component
 export default function F1LearningApp() {
   const [currentModule, setCurrentModule] = useState(null);
   const [completedModules, setCompletedModules] = useState([]);
 
   const modules = [
     { id: 1, title: 'F1 Basics', icon: BookOpen, description: 'Learn what F1 is all about' },
-    { id: 2, title: 'The Race', icon: Trophy, description: 'Understand race day format' },
-    { id: 3, title: 'Race Strategy', icon: Award, description: 'Master tire strategy and pit stops' },
+    { id: 2, title: 'The Race', icon: Flag, description: 'Understand race day format' },
+    { id: 3, title: 'Race Strategy', icon: Zap, description: 'Master tire strategy and pit stops' },
   ];
 
   const handleModuleComplete = (moduleId) => {
@@ -20,7 +19,6 @@ export default function F1LearningApp() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-gray-900 text-white">
-      {/* Header */}
       <header className="bg-black/50 backdrop-blur-sm border-b border-red-600/30 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -38,7 +36,6 @@ export default function F1LearningApp() {
 
       <div className="max-w-6xl mx-auto px-6 py-8">
         {!currentModule ? (
-          // Module Selection Screen
           <div>
             <div className="mb-8">
               <h2 className="text-4xl font-bold mb-3">Welcome to F1 Academy</h2>
@@ -74,7 +71,6 @@ export default function F1LearningApp() {
             </div>
           </div>
         ) : (
-          // Module Content
           <div>
             <button
               onClick={() => setCurrentModule(null)}
@@ -84,15 +80,9 @@ export default function F1LearningApp() {
               Back to Modules
             </button>
 
-            {currentModule === 1 && (
-              <Module1 onComplete={() => handleModuleComplete(1)} />
-            )}
-            {currentModule === 2 && (
-              <ComingSoon moduleName="The Race" />
-            )}
-            {currentModule === 3 && (
-              <ComingSoon moduleName="Race Strategy" />
-            )}
+            {currentModule === 1 && <Module1 onComplete={() => handleModuleComplete(1)} />}
+            {currentModule === 2 && <Module2 onComplete={() => handleModuleComplete(2)} />}
+            {currentModule === 3 && <Module3 onComplete={() => handleModuleComplete(3)} />}
           </div>
         )}
       </div>
@@ -100,22 +90,14 @@ export default function F1LearningApp() {
   );
 }
 
-// Module 1: F1 Basics Component
-function Module1({ onComplete }) {
+function ModuleTemplate({ moduleNumber, title, sections, LearnComponent, SeeItComponent, TryItComponent, onComplete }) {
   const [currentSection, setCurrentSection] = useState('learn');
   const [quizScore, setQuizScore] = useState(null);
 
-  const sections = [
-    { id: 'learn', label: 'Learn', icon: BookOpen },
-    { id: 'seeIt', label: 'See It', icon: Eye },
-    { id: 'tryIt', label: 'Try It', icon: Trophy },
-  ];
-
   return (
     <div>
-      <h2 className="text-4xl font-bold mb-6">Module 1: F1 Basics</h2>
+      <h2 className="text-4xl font-bold mb-6">Module {moduleNumber}: {title}</h2>
 
-      {/* Section Navigation */}
       <div className="flex gap-4 mb-8 border-b border-red-600/30 pb-4">
         {sections.map((section) => {
           const Icon = section.icon;
@@ -136,18 +118,26 @@ function Module1({ onComplete }) {
         })}
       </div>
 
-      {/* Section Content */}
       <div className="bg-black/40 backdrop-blur border border-red-600/30 rounded-lg p-8">
-        {currentSection === 'learn' && <LearnSection />}
-        {currentSection === 'seeIt' && <SeeItSection />}
-        {currentSection === 'tryIt' && <TryItSection quizScore={quizScore} setQuizScore={setQuizScore} onComplete={onComplete} />}
+        {currentSection === 'learn' && <LearnComponent />}
+        {currentSection === 'seeIt' && <SeeItComponent />}
+        {currentSection === 'tryIt' && <TryItComponent quizScore={quizScore} setQuizScore={setQuizScore} onComplete={onComplete} />}
       </div>
     </div>
   );
 }
 
-// Learn Section Content
-function LearnSection() {
+function Module1({ onComplete }) {
+  const sections = [
+    { id: 'learn', label: 'Learn', icon: BookOpen },
+    { id: 'seeIt', label: 'See It', icon: Eye },
+    { id: 'tryIt', label: 'Try It', icon: Trophy },
+  ];
+
+  return <ModuleTemplate moduleNumber={1} title="F1 Basics" sections={sections} LearnComponent={Module1Learn} SeeItComponent={Module1SeeIt} TryItComponent={Module1TryIt} onComplete={onComplete} />;
+}
+
+function Module1Learn() {
   return (
     <div className="space-y-6">
       <div>
@@ -163,19 +153,16 @@ function LearnSection() {
         <h3 className="text-2xl font-bold text-red-500 mb-3">Two Championships</h3>
         <div className="space-y-4">
           <div className="bg-red-950/30 border border-red-600/50 rounded-lg p-4">
-            <h4 className="font-bold text-lg mb-2">🏆 Driver's Championship</h4>
+            <h4 className="font-bold text-lg mb-2">Driver's Championship</h4>
             <p className="text-gray-300">
-              The individual driver with the most points wins. This is what fans typically focus on - 
-              the battle between legendary drivers like Verstappen, Hamilton, and Leclerc.
+              The individual driver with the most points wins. This is what fans typically focus on.
             </p>
           </div>
           
           <div className="bg-red-950/30 border border-red-600/50 rounded-lg p-4">
-            <h4 className="font-bold text-lg mb-2">🏁 Constructor's Championship</h4>
+            <h4 className="font-bold text-lg mb-2">Constructor's Championship</h4>
             <p className="text-gray-300">
-              The team with the most combined points from both their drivers wins. This is what teams 
-              actually care most about because it determines prize money distribution. A team could have 
-              the Driver's Champion but lose the Constructor's Championship if their second driver underperforms.
+              The team with the most combined points from both drivers wins. This determines prize money.
             </p>
           </div>
         </div>
@@ -187,22 +174,22 @@ function LearnSection() {
           <div className="flex items-start gap-4">
             <span className="bg-red-600 text-white text-sm font-bold px-3 py-1 rounded">FRI</span>
             <div>
-              <p className="font-semibold">Free Practice 1 & 2</p>
+              <p className="font-semibold">Free Practice 1 and 2</p>
               <p className="text-gray-400 text-sm">Teams test setups and drivers learn the track</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
             <span className="bg-red-600 text-white text-sm font-bold px-3 py-1 rounded">SAT</span>
             <div>
-              <p className="font-semibold">Free Practice 3 + Qualifying</p>
-              <p className="text-gray-400 text-sm">Final practice, then qualifying determines Sunday's starting grid</p>
+              <p className="font-semibold">Free Practice 3 plus Qualifying</p>
+              <p className="text-gray-400 text-sm">Final practice, then qualifying determines starting grid</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
             <span className="bg-red-600 text-white text-sm font-bold px-3 py-1 rounded">SUN</span>
             <div>
               <p className="font-semibold">The Race</p>
-              <p className="text-gray-400 text-sm">Points awarded to top 10 finishers: 25-18-15-12-10-8-6-4-2-1</p>
+              <p className="text-gray-400 text-sm">Points awarded to top 10 finishers</p>
             </div>
           </div>
         </div>
@@ -211,8 +198,7 @@ function LearnSection() {
   );
 }
 
-// See It Section with Data Visualization
-function SeeItSection() {
+function Module1SeeIt() {
   const pointsSystem = [
     { position: '1st', points: 25, color: 'bg-yellow-500' },
     { position: '2nd', points: 18, color: 'bg-gray-300' },
@@ -231,8 +217,7 @@ function SeeItSection() {
       <div>
         <h3 className="text-2xl font-bold text-red-500 mb-4">Points Distribution</h3>
         <p className="text-gray-300 mb-6">
-          Only the top 10 finishers score points. Notice the huge gap between 1st and 2nd place - 
-          winning matters significantly more than coming second.
+          Only the top 10 finishers score points. Notice the huge gap between 1st and 2nd place.
         </p>
         
         <div className="space-y-3">
@@ -241,7 +226,7 @@ function SeeItSection() {
               <span className="w-12 text-right font-semibold">{item.position}</span>
               <div className="flex-1 bg-gray-800 rounded-full h-8 overflow-hidden">
                 <div
-                  className={`${item.color} h-full flex items-center justify-end pr-4 font-bold text-sm transition-all duration-1000`}
+                  className={`${item.color} h-full flex items-center justify-end pr-4 font-bold text-sm`}
                   style={{ width: `${(item.points / 25) * 100}%` }}
                 >
                   {item.points} pts
@@ -251,61 +236,377 @@ function SeeItSection() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="bg-red-950/30 border border-red-600/50 rounded-lg p-6">
-        <h4 className="text-xl font-bold mb-3">Why This Matters</h4>
+function Module1TryIt({ quizScore, setQuizScore, onComplete }) {
+  const questions = [
+    {
+      question: "Driver A leads by 15 points with 2 races left. Driver B wins both for 50 points. Driver A finishes 2nd both times for 36 points. Who wins?",
+      options: [
+        { text: "Driver A", correct: false },
+        { text: "Driver B", correct: true },
+        { text: "They tie", correct: false },
+      ],
+      explanation: "Driver B gains 50 points while Driver A gains 36. Driver B wins by 1 point!"
+    },
+    {
+      question: "Your team has drivers in P2 and P3. The P3 driver leads the championship. What should the team do?",
+      options: [
+        { text: "Keep positions", correct: false },
+        { text: "Swap them via team orders", correct: true },
+        { text: "Let them race", correct: false },
+      ],
+      explanation: "Most teams would issue team orders to help their championship contender."
+    },
+    {
+      question: "What does the Constructor's Championship determine?",
+      options: [
+        { text: "Driver bragging rights", correct: false },
+        { text: "Prize money distribution", correct: true },
+        { text: "Garage location", correct: false },
+      ],
+      explanation: "The Constructor's Championship determines prize money distribution among teams."
+    },
+  ];
+
+  return <QuizComponent questions={questions} quizScore={quizScore} setQuizScore={setQuizScore} onComplete={onComplete} />;
+}
+
+function Module2({ onComplete }) {
+  const sections = [
+    { id: 'learn', label: 'Learn', icon: BookOpen },
+    { id: 'seeIt', label: 'See It', icon: Eye },
+    { id: 'tryIt', label: 'Try It', icon: Trophy },
+  ];
+
+  return <ModuleTemplate moduleNumber={2} title="The Race" sections={sections} LearnComponent={Module2Learn} SeeItComponent={Module2SeeIt} TryItComponent={Module2TryIt} onComplete={onComplete} />;
+}
+
+function Module2Learn() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Race Start</h3>
+        <p className="text-gray-300 leading-relaxed mb-4">
+          Drivers complete a formation lap, then line up on the grid. Five red lights illuminate one by one, then all go out - that's the start!
+        </p>
+      </div>
+
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Race Flags</h3>
+        <div className="space-y-3">
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-12 bg-green-500 rounded"></div>
+            <div>
+              <p className="font-semibold">Green Flag</p>
+              <p className="text-gray-400 text-sm">Track clear, racing can begin</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-12 bg-yellow-400 rounded"></div>
+            <div>
+              <p className="font-semibold">Yellow Flag</p>
+              <p className="text-gray-400 text-sm">Danger ahead, no overtaking</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-12 bg-red-600 rounded"></div>
+            <div>
+              <p className="font-semibold">Red Flag</p>
+              <p className="text-gray-400 text-sm">Session stopped</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-12 bg-blue-600 rounded"></div>
+            <div>
+              <p className="font-semibold">Blue Flag</p>
+              <p className="text-gray-400 text-sm">Faster car behind, let them pass</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Safety Car and VSC</h3>
+        <div className="space-y-4">
+          <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-4">
+            <h4 className="font-bold text-lg mb-2">Safety Car</h4>
+            <p className="text-gray-300">
+              For serious incidents. All cars line up behind safety car. Perfect time to pit!
+            </p>
+          </div>
+          <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-4">
+            <h4 className="font-bold text-lg mb-2">Virtual Safety Car</h4>
+            <p className="text-gray-300">
+              For minor incidents. Drivers slow to delta time. Gaps maintained.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Module2SeeIt() {
+  const [selected, setSelected] = useState('crash');
+
+  const incidents = {
+    crash: { title: "Major Crash", flag: "Red Flag", color: "bg-red-600" },
+    debris: { title: "Debris", flag: "Safety Car", color: "bg-yellow-400" },
+    minor: { title: "Minor Issue", flag: "VSC", color: "bg-yellow-600" }
+  };
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Race Incidents</h3>
+        
+        <div className="flex gap-4 mb-6">
+          {Object.entries(incidents).map(([key, data]) => (
+            <button
+              key={key}
+              onClick={() => setSelected(key)}
+              className={`px-4 py-2 rounded-lg font-semibold ${
+                selected === key ? 'bg-red-600' : 'bg-black/60'
+              }`}
+            >
+              {data.title}
+            </button>
+          ))}
+        </div>
+
+        <div className="bg-black/60 border border-red-600/30 rounded-lg p-6">
+          <div className="flex items-center gap-4">
+            <div className={`w-20 h-14 ${incidents[selected].color} rounded`}></div>
+            <h4 className="text-xl font-bold">{incidents[selected].flag}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Module2TryIt({ quizScore, setQuizScore, onComplete }) {
+  const questions = [
+    {
+      question: "Debris at Turn 5. What flag is shown?",
+      options: [
+        { text: "Red flag", correct: false },
+        { text: "Yellow flag", correct: true },
+        { text: "Blue flag", correct: false },
+      ],
+      explanation: "Yellow flags indicate local danger. Drivers must slow and cannot overtake."
+    },
+    {
+      question: "Safety car deployed, you're P5 on old tires. What do you do?",
+      options: [
+        { text: "Stay out", correct: false },
+        { text: "Pit immediately", correct: true },
+        { text: "Wait and see", correct: false },
+      ],
+      explanation: "Safety cars minimize pit time loss. Fresh tires after restart are a huge advantage."
+    },
+    {
+      question: "Red flag after 40 of 50 laps. What happens?",
+      options: [
+        { text: "Race over", correct: false },
+        { text: "Return to pits, race restarts", correct: true },
+        { text: "VSC deployed", correct: false },
+      ],
+      explanation: "Red flags pause the race. Teams can work on cars before restart."
+    },
+  ];
+
+  return <QuizComponent questions={questions} quizScore={quizScore} setQuizScore={setQuizScore} onComplete={onComplete} />;
+}
+
+function Module3({ onComplete }) {
+  const sections = [
+    { id: 'learn', label: 'Learn', icon: BookOpen },
+    { id: 'seeIt', label: 'See It', icon: Eye },
+    { id: 'tryIt', label: 'Try It', icon: Trophy },
+  ];
+
+  return <ModuleTemplate moduleNumber={3} title="Race Strategy" sections={sections} LearnComponent={Module3Learn} SeeItComponent={Module3SeeIt} TryItComponent={Module3TryIt} onComplete={onComplete} />;
+}
+
+function Module3Learn() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Tire Compounds</h3>
+        <p className="text-gray-300 mb-4">
+          Three dry compounds per race. Must use at least two different types.
+        </p>
+        <div className="space-y-3">
+          <div className="bg-red-900/30 border border-red-600/50 rounded-lg p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-red-500 rounded-full"></div>
+              <h4 className="font-bold">Soft (Red)</h4>
+            </div>
+            <p className="text-gray-300 text-sm">Fastest but degrades quickly. 10-20 laps.</p>
+          </div>
+          <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-yellow-400 rounded-full"></div>
+              <h4 className="font-bold">Medium (Yellow)</h4>
+            </div>
+            <p className="text-gray-300 text-sm">Balanced performance. 20-30 laps.</p>
+          </div>
+          <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+              <h4 className="font-bold">Hard (White)</h4>
+            </div>
+            <p className="text-gray-300 text-sm">Slowest but lasts longest. 30-40+ laps.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Undercut vs Overcut</h3>
+        <div className="space-y-4">
+          <div className="bg-blue-900/30 border border-blue-600/50 rounded-lg p-4">
+            <h4 className="font-bold text-lg mb-2">Undercut</h4>
+            <p className="text-gray-300">
+              Pit BEFORE your rival. Fresh tires let you go faster and gain track position when they pit.
+            </p>
+          </div>
+          <div className="bg-purple-900/30 border border-purple-600/50 rounded-lg p-4">
+            <h4 className="font-bold text-lg mb-2">Overcut</h4>
+            <p className="text-gray-300">
+              Stay out LONGER than your rival. Push on old tires while they're in traffic on new tires.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Pit Strategy</h3>
         <p className="text-gray-300">
-          The 7-point gap between 1st (25) and 2nd (18) is massive. A driver who consistently finishes 
-          2nd will struggle to beat someone who wins races even if they DNF occasionally. This points 
-          structure rewards aggressive racing and going for wins.
+          Pit stops take 2-3 seconds but cost 20-25 seconds total. Strategic timing is everything.
         </p>
       </div>
     </div>
   );
 }
 
-// Try It Section with Interactive Quiz
-function TryItSection({ quizScore, setQuizScore, onComplete }) {
+function Module3SeeIt() {
+  const [strategy, setStrategy] = useState('one');
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Strategy Comparison</h3>
+        
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={() => setStrategy('one')}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              strategy === 'one' ? 'bg-red-600' : 'bg-black/60'
+            }`}
+          >
+            One Stop
+          </button>
+          <button
+            onClick={() => setStrategy('two')}
+            className={`px-4 py-2 rounded-lg font-semibold ${
+              strategy === 'two' ? 'bg-red-600' : 'bg-black/60'
+            }`}
+          >
+            Two Stop
+          </button>
+        </div>
+
+        <div className="bg-black/60 border border-red-600/30 rounded-lg p-6">
+          {strategy === 'one' ? (
+            <div>
+              <h4 className="text-xl font-bold mb-3">One-Stop Strategy</h4>
+              <p className="text-gray-300 mb-4">Start on mediums, switch to hards around lap 25-30.</p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
+                  <span>Laps 1-28: Medium tires</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-gray-300 rounded-full"></div>
+                  <span>Laps 29-55: Hard tires</span>
+                </div>
+              </div>
+              <p className="text-gray-400 text-sm mt-4">Lower risk, less time lost in pits, but slower overall pace.</p>
+            </div>
+          ) : (
+            <div>
+              <h4 className="text-xl font-bold mb-3">Two-Stop Strategy</h4>
+              <p className="text-gray-300 mb-4">Aggressive strategy with fresher tires throughout.</p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+                  <span>Laps 1-18: Soft tires</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
+                  <span>Laps 19-38: Medium tires</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+                  <span>Laps 39-55: Soft tires</span>
+                </div>
+              </div>
+              <p className="text-gray-400 text-sm mt-4">Higher risk, more pit time, but faster overall pace.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Module3TryIt({ quizScore, setQuizScore, onComplete }) {
+  const questions = [
+    {
+      question: "You're racing your rival. They just pitted. What's the undercut strategy?",
+      options: [
+        { text: "Pit immediately before them", correct: false },
+        { text: "Stay out longer", correct: false },
+        { text: "Already did it - you pit first", correct: true },
+      ],
+      explanation: "Undercut means pitting BEFORE your rival to gain advantage with fresh tires."
+    },
+    {
+      question: "50-lap race. Which strategy is typically faster but riskier?",
+      options: [
+        { text: "One stop", correct: false },
+        { text: "Two stop", correct: true },
+        { text: "Zero stop", correct: false },
+      ],
+      explanation: "Two stops are faster (fresher tires) but riskier (more pit time, more can go wrong)."
+    },
+    {
+      question: "Lap 20 of 50. Softs are dead, leader 15s ahead on mediums. What do you do?",
+      options: [
+        { text: "Stay out and hope", correct: false },
+        { text: "Pit for mediums", correct: true },
+        { text: "Pit for more softs", correct: false },
+      ],
+      explanation: "Dead tires lose seconds per lap. Pit for mediums to stay competitive."
+    },
+  ];
+
+  return <QuizComponent questions={questions} quizScore={quizScore} setQuizScore={setQuizScore} onComplete={onComplete} />;
+}
+
+function QuizComponent({ questions, quizScore, setQuizScore, onComplete }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
 
-  const questions = [
-    {
-      question: "Driver A is leading the championship by 15 points. There are 2 races left. Driver B wins both races (50 points). Driver A finishes 2nd both times (36 points). Who wins?",
-      options: [
-        { text: "Driver A", correct: false },
-        { text: "Driver B", correct: true },
-        { text: "They tie", correct: false },
-      ],
-      explanation: "Driver B gains 50 points while Driver A gains 36. Driver B closes the 15-point gap and wins by 1 point!"
-    },
-    {
-      question: "Your team has drivers in P2 and P3. The P3 driver is leading the Driver's Championship. The P2 driver is out of contention. What should you do?",
-      options: [
-        { text: "Keep positions - racing is racing", correct: false },
-        { text: "Swap them via team orders", correct: true },
-        { text: "Let them race it out", correct: false },
-      ],
-      explanation: "Most teams would issue team orders to swap positions. The Constructor's Championship matters, but helping your championship contender is crucial. This happened famously with Ferrari's 'Fernando is faster than you' in 2010."
-    },
-    {
-      question: "What does the Constructor's Championship determine?",
-      options: [
-        { text: "Which driver gets bragging rights", correct: false },
-        { text: "Prize money distribution to teams", correct: true },
-        { text: "Who picks their garage location", correct: false },
-      ],
-      explanation: "The Constructor's Championship determines how prize money is distributed among teams. This is why teams sometimes prioritize it over the Driver's Championship."
-    },
-  ];
-
   const handleAnswer = (index) => {
     setSelectedAnswer(index);
     setShowFeedback(true);
-
     if (questions[currentQuestion].options[index].correct) {
-      if (!quizScore) setQuizScore(0);
       setQuizScore(prev => (prev || 0) + 1);
     }
   };
@@ -364,9 +665,7 @@ function TryItSection({ quizScore, setQuizScore, onComplete }) {
                       : 'bg-black/40 border-red-600/30 hover:border-red-500 hover:bg-black/60'
                   } ${showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
-                  <span className={showResult && isCorrect ? 'font-bold' : ''}>
-                    {option.text}
-                  </span>
+                  {option.text}
                 </button>
               );
             })}
@@ -400,16 +699,6 @@ function TryItSection({ quizScore, setQuizScore, onComplete }) {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-// Coming Soon Placeholder
-function ComingSoon({ moduleName }) {
-  return (
-    <div className="text-center py-16 bg-black/40 backdrop-blur border border-red-600/30 rounded-lg">
-      <h3 className="text-3xl font-bold mb-4">{moduleName}</h3>
-      <p className="text-gray-400 text-lg">This module is under development. Check back soon!</p>
     </div>
   );
 }
