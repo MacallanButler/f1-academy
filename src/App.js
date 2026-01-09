@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, BookOpen, Eye, Trophy, Flag, Zap } from 'lucide-react';
+import { ChevronRight, BookOpen, Eye, Trophy, Flag, Zap, CheckCircle, XCircle } from 'lucide-react';
 
 export default function F1LearningApp() {
   const [currentModule, setCurrentModule] = useState(null);
@@ -7,8 +7,8 @@ export default function F1LearningApp() {
 
   const modules = [
     { id: 1, title: 'F1 Basics', icon: BookOpen, description: 'Learn what F1 is all about' },
-    { id: 2, title: 'The Race', icon: Flag, description: 'Understand race day format' },
-    { id: 3, title: 'Race Strategy', icon: Zap, description: 'Master tire strategy and pit stops' },
+    { id: 2, title: 'F1 Race Day', icon: Flag, description: 'Understand F1 race format' },
+    { id: 3, title: 'F1 Strategy', icon: Zap, description: 'Master F1 tire strategy' },
   ];
 
   const handleModuleComplete = (moduleId) => {
@@ -22,10 +22,10 @@ export default function F1LearningApp() {
       <header className="bg-black/50 backdrop-blur-sm border-b border-red-600/30 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
+            <button onClick={() => setCurrentModule(null)} className="hover:opacity-80 transition-opacity">
               <h1 className="text-3xl font-bold tracking-tight">F1 <span className="text-red-500">ACADEMY</span></h1>
               <p className="text-gray-400 text-sm mt-1">Your gateway to Formula 1</p>
-            </div>
+            </button>
             <div className="text-right">
               <p className="text-sm text-gray-400">Progress</p>
               <p className="text-xl font-bold">{completedModules.length}/{modules.length}</p>
@@ -72,14 +72,6 @@ export default function F1LearningApp() {
           </div>
         ) : (
           <div>
-            <button
-              onClick={() => setCurrentModule(null)}
-              className="text-gray-400 hover:text-white mb-6 flex items-center"
-            >
-              <ChevronRight className="w-4 h-4 rotate-180 mr-2" />
-              Back to Modules
-            </button>
-
             {currentModule === 1 && <Module1 onComplete={() => handleModuleComplete(1)} />}
             {currentModule === 2 && <Module2 onComplete={() => handleModuleComplete(2)} />}
             {currentModule === 3 && <Module3 onComplete={() => handleModuleComplete(3)} />}
@@ -92,7 +84,7 @@ export default function F1LearningApp() {
 
 function ModuleTemplate({ moduleNumber, title, sections, LearnComponent, SeeItComponent, TryItComponent, onComplete }) {
   const [currentSection, setCurrentSection] = useState('learn');
-  const [quizScore, setQuizScore] = useState(null);
+  const [quizScore, setQuizScore] = useState(0);
 
   return (
     <div>
@@ -130,7 +122,7 @@ function ModuleTemplate({ moduleNumber, title, sections, LearnComponent, SeeItCo
 function Module1({ onComplete }) {
   const sections = [
     { id: 'learn', label: 'Learn', icon: BookOpen },
-    { id: 'seeIt', label: 'See It', icon: Eye },
+    { id: 'seeIt', label: 'Visualize', icon: Eye },
     { id: 'tryIt', label: 'Try It', icon: Trophy },
   ];
 
@@ -201,15 +193,15 @@ function Module1Learn() {
 function Module1SeeIt() {
   const pointsSystem = [
     { position: '1st', points: 25, color: 'bg-yellow-500' },
-    { position: '2nd', points: 18, color: 'bg-gray-300' },
+    { position: '2nd', points: 18, color: 'bg-gray-400' },
     { position: '3rd', points: 15, color: 'bg-orange-600' },
-    { position: '4th', points: 12, color: 'bg-blue-500' },
+    { position: '4th', points: 12, color: 'bg-blue-600' },
     { position: '5th', points: 10, color: 'bg-blue-400' },
-    { position: '6th', points: 8, color: 'bg-green-500' },
+    { position: '6th', points: 8, color: 'bg-green-600' },
     { position: '7th', points: 6, color: 'bg-green-400' },
-    { position: '8th', points: 4, color: 'bg-purple-500' },
+    { position: '8th', points: 4, color: 'bg-purple-600' },
     { position: '9th', points: 2, color: 'bg-purple-400' },
-    { position: '10th', points: 1, color: 'bg-pink-500' },
+    { position: '10th', points: 1, color: 'bg-pink-600' },
   ];
 
   return (
@@ -226,7 +218,7 @@ function Module1SeeIt() {
               <span className="w-12 text-right font-semibold">{item.position}</span>
               <div className="flex-1 bg-gray-800 rounded-full h-8 overflow-hidden">
                 <div
-                  className={`${item.color} h-full flex items-center justify-end pr-4 font-bold text-sm`}
+                  className={`${item.color} h-full flex items-center justify-end pr-4 font-bold text-sm text-white`}
                   style={{ width: `${(item.points / 25) * 100}%` }}
                 >
                   {item.points} pts
@@ -243,45 +235,47 @@ function Module1SeeIt() {
 function Module1TryIt({ quizScore, setQuizScore, onComplete }) {
   const questions = [
     {
-      question: "Driver A leads by 15 points with 2 races left. Driver B wins both for 50 points. Driver A finishes 2nd both times for 36 points. Who wins?",
+      question: "Driver A leads the championship by 15 points. There are 2 races left. Driver B wins both races (25 points each = 50 total). Driver A finishes 2nd both times (18 points each = 36 total). Who wins the championship?",
       options: [
-        { text: "Driver A", correct: false },
-        { text: "Driver B", correct: true },
+        { text: "Driver A", correct: true },
+        { text: "Driver B", correct: false },
         { text: "They tie", correct: false },
       ],
-      explanation: "Driver B gains 50 points while Driver A gains 36. Driver B wins by 1 point!"
+      explanation: "Driver A started with a 15-point lead. Driver A gains 36 points (18+18), so their new lead is 15+36 = 51 points total. Driver B gains 50 points (25+25). Driver A wins by 1 point (51 vs 50)!"
     },
     {
-      question: "Your team has drivers in P2 and P3. The P3 driver leads the championship. What should the team do?",
+      question: "Your team has drivers in Position 2 (P2) and Position 3 (P3). The P3 driver is leading the Driver's Championship. The P2 driver is out of championship contention. What should the team do?",
       options: [
-        { text: "Keep positions", correct: false },
+        { text: "Keep positions - racing is racing", correct: false },
         { text: "Swap them via team orders", correct: true },
         { text: "Let them race", correct: false },
       ],
-      explanation: "Most teams would issue team orders to help their championship contender."
+      explanation: "Most teams would issue team orders to help their championship contender. The extra points could decide the championship. Note: P2 means Position 2 (second place), P3 means Position 3 (third place)."
     },
     {
       question: "What does the Constructor's Championship determine?",
       options: [
         { text: "Driver bragging rights", correct: false },
-        { text: "Prize money distribution", correct: true },
+        { text: "Prize money distribution to teams", correct: true },
         { text: "Garage location", correct: false },
       ],
-      explanation: "The Constructor's Championship determines prize money distribution among teams."
+      explanation: "The Constructor's Championship determines how prize money is distributed among teams. This is why teams prioritize it heavily - it directly impacts their budget for next season."
     },
   ];
 
   return <QuizComponent questions={questions} quizScore={quizScore} setQuizScore={setQuizScore} onComplete={onComplete} />;
 }
 
+
+
 function Module2({ onComplete }) {
   const sections = [
     { id: 'learn', label: 'Learn', icon: BookOpen },
-    { id: 'seeIt', label: 'See It', icon: Eye },
+    { id: 'seeIt', label: 'Visualize', icon: Eye },
     { id: 'tryIt', label: 'Try It', icon: Trophy },
   ];
 
-  return <ModuleTemplate moduleNumber={2} title="The Race" sections={sections} LearnComponent={Module2Learn} SeeItComponent={Module2SeeIt} TryItComponent={Module2TryIt} onComplete={onComplete} />;
+  return <ModuleTemplate moduleNumber={2} title="F1 Race Day" sections={sections} LearnComponent={Module2Learn} SeeItComponent={Module2SeeIt} TryItComponent={Module2TryIt} onComplete={onComplete} />;
 }
 
 function Module2Learn() {
@@ -290,7 +284,7 @@ function Module2Learn() {
       <div>
         <h3 className="text-2xl font-bold text-red-500 mb-3">Race Start</h3>
         <p className="text-gray-300 leading-relaxed mb-4">
-          Drivers complete a formation lap, then line up on the grid. Five red lights illuminate one by one, then all go out - that's the start!
+          Drivers complete a formation lap, then line up on the grid. Five red lights illuminate one by one, then all go out simultaneously (they don't turn green) - that's the start signal!
         </p>
       </div>
 
@@ -308,42 +302,49 @@ function Module2Learn() {
             <div className="w-16 h-12 bg-yellow-400 rounded"></div>
             <div>
               <p className="font-semibold">Yellow Flag</p>
-              <p className="text-gray-400 text-sm">Danger ahead, no overtaking</p>
+              <p className="text-gray-400 text-sm">Danger ahead, no overtaking in that sector</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
             <div className="w-16 h-12 bg-red-600 rounded"></div>
             <div>
               <p className="font-semibold">Red Flag</p>
-              <p className="text-gray-400 text-sm">Session stopped</p>
+              <p className="text-gray-400 text-sm">Session stopped - all cars must return to pit lane immediately. Race is paused due to serious incident or unsafe conditions.</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
             <div className="w-16 h-12 bg-blue-600 rounded"></div>
             <div>
               <p className="font-semibold">Blue Flag</p>
-              <p className="text-gray-400 text-sm">Faster car behind, let them pass</p>
+              <p className="text-gray-400 text-sm">Faster car behind, you must let them pass within 3 blue flags</p>
             </div>
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-2xl font-bold text-red-500 mb-3">Safety Car and VSC</h3>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Safety Car and Virtual Safety Car</h3>
         <div className="space-y-4">
           <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-4">
-            <h4 className="font-bold text-lg mb-2">Safety Car</h4>
+            <h4 className="font-bold text-lg mb-2">Safety Car (SC)</h4>
             <p className="text-gray-300">
-              For serious incidents. All cars line up behind safety car. Perfect time to pit!
+              Deployed for serious incidents. All cars must slow down and line up behind the safety car. No overtaking allowed. Perfect time to pit since the pack bunches up!
             </p>
           </div>
           <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-4">
-            <h4 className="font-bold text-lg mb-2">Virtual Safety Car</h4>
+            <h4 className="font-bold text-lg mb-2">Virtual Safety Car (VSC)</h4>
             <p className="text-gray-300">
-              For minor incidents. Drivers slow to delta time. Gaps maintained.
+              Deployed for minor incidents. Drivers must slow to a target delta time (a specific lap time that's about 30% slower than normal). Gaps between cars are maintained. Teams can still pit but the advantage is smaller than under a full Safety Car.
             </p>
           </div>
         </div>
+      </div>
+
+      <div>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Red Flag Procedures</h3>
+        <p className="text-gray-300 leading-relaxed">
+          When a red flag is shown, the race is immediately stopped. All cars must slow down and return to the pit lane. During a red flag period, teams can work on the cars, change tires, and repair damage. The race will restart once the track is safe, usually with a standing start from the grid positions they were in when the red flag was shown.
+        </p>
       </div>
     </div>
   );
@@ -353,17 +354,17 @@ function Module2SeeIt() {
   const [selected, setSelected] = useState('crash');
 
   const incidents = {
-    crash: { title: "Major Crash", flag: "Red Flag", color: "bg-red-600" },
-    debris: { title: "Debris", flag: "Safety Car", color: "bg-yellow-400" },
-    minor: { title: "Minor Issue", flag: "VSC", color: "bg-yellow-600" }
+    crash: { title: "Major Crash", flag: "Red Flag", color: "bg-red-600", description: "Race stopped immediately. All cars return to pit lane where teams can work on cars. Race will restart once track is safe." },
+    debris: { title: "Debris on Track", flag: "Safety Car", color: "bg-yellow-400", description: "Pack bunches up behind safety car. Perfect time to pit! Gap to cars behind is minimized." },
+    minor: { title: "Car Stopped Safely", flag: "Virtual Safety Car", color: "bg-yellow-600", description: "Cars slow to delta time (target lap time). Gaps maintained. Some teams pit but advantage is smaller." }
   };
 
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-2xl font-bold text-red-500 mb-4">Race Incidents</h3>
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Race Incidents and Flags</h3>
         
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-4 mb-6 flex-wrap">
           {Object.entries(incidents).map(([key, data]) => (
             <button
               key={key}
@@ -378,10 +379,11 @@ function Module2SeeIt() {
         </div>
 
         <div className="bg-black/60 border border-red-600/30 rounded-lg p-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 mb-4">
             <div className={`w-20 h-14 ${incidents[selected].color} rounded`}></div>
             <h4 className="text-xl font-bold">{incidents[selected].flag}</h4>
           </div>
+          <p className="text-gray-300">{incidents[selected].description}</p>
         </div>
       </div>
     </div>
@@ -391,31 +393,31 @@ function Module2SeeIt() {
 function Module2TryIt({ quizScore, setQuizScore, onComplete }) {
   const questions = [
     {
-      question: "Debris at Turn 5. What flag is shown?",
+      question: "There's debris on track at Turn 5. What flag will be shown and what should drivers do?",
       options: [
-        { text: "Red flag", correct: false },
-        { text: "Yellow flag", correct: true },
-        { text: "Blue flag", correct: false },
+        { text: "Red flag - stop the race", correct: false },
+        { text: "Yellow flag - slow down, no overtaking in that sector", correct: true },
+        { text: "Blue flag - let faster cars pass", correct: false },
       ],
-      explanation: "Yellow flags indicate local danger. Drivers must slow and cannot overtake."
+      explanation: "Yellow flags indicate local danger in a specific sector. Drivers must slow down and cannot overtake in that flag zone. If debris is serious and can't be cleared quickly, it might escalate to a Safety Car or red flag."
     },
     {
-      question: "Safety car deployed, you're P5 on old tires. What do you do?",
+      question: "You're in Position 5 (P5) on old tires. A Safety Car is deployed. Your pit crew can service you in 2.5 seconds. What do you do?",
       options: [
-        { text: "Stay out", correct: false },
-        { text: "Pit immediately", correct: true },
-        { text: "Wait and see", correct: false },
+        { text: "Stay out - track position is everything", correct: false },
+        { text: "Pit immediately - minimal time loss under Safety Car", correct: true },
+        { text: "Wait to see what leaders do", correct: false },
       ],
-      explanation: "Safety cars minimize pit time loss. Fresh tires after restart are a huge advantage."
+      explanation: "Safety Cars bunch up the field, so pitting costs you much less time than under green flag conditions. Fresh tires after the restart will be a huge advantage. This is why you often see most of the field pit during a Safety Car."
     },
     {
-      question: "Red flag after 40 of 50 laps. What happens?",
+      question: "The race is red flagged after 40 of 50 laps due to heavy rain. What happens next?",
       options: [
-        { text: "Race over", correct: false },
-        { text: "Return to pits, race restarts", correct: true },
-        { text: "VSC deployed", correct: false },
+        { text: "Race is over, points awarded based on current positions", correct: false },
+        { text: "Cars return to pits, teams can work on cars, race will restart when conditions improve", correct: true },
+        { text: "Virtual Safety Car is deployed instead", correct: false },
       ],
-      explanation: "Red flags pause the race. Teams can work on cars before restart."
+      explanation: "Red flags pause the race. All cars return to pit lane where teams can work on them - change tires, fix damage, adjust setup. The race will restart once conditions are safe, usually with a standing start. If enough laps are completed, full points are awarded."
     },
   ];
 
@@ -425,11 +427,11 @@ function Module2TryIt({ quizScore, setQuizScore, onComplete }) {
 function Module3({ onComplete }) {
   const sections = [
     { id: 'learn', label: 'Learn', icon: BookOpen },
-    { id: 'seeIt', label: 'See It', icon: Eye },
+    { id: 'seeIt', label: 'Visualize', icon: Eye },
     { id: 'tryIt', label: 'Try It', icon: Trophy },
   ];
 
-  return <ModuleTemplate moduleNumber={3} title="Race Strategy" sections={sections} LearnComponent={Module3Learn} SeeItComponent={Module3SeeIt} TryItComponent={Module3TryIt} onComplete={onComplete} />;
+  return <ModuleTemplate moduleNumber={3} title="F1 Strategy" sections={sections} LearnComponent={Module3Learn} SeeItComponent={Module3SeeIt} TryItComponent={Module3TryIt} onComplete={onComplete} />;
 }
 
 function Module3Learn() {
@@ -438,7 +440,7 @@ function Module3Learn() {
       <div>
         <h3 className="text-2xl font-bold text-red-500 mb-3">Tire Compounds</h3>
         <p className="text-gray-300 mb-4">
-          Three dry compounds per race. Must use at least two different types.
+          Pirelli provides three dry-weather tire compounds for each race, marked with colored sidewalls. Teams must use at least two different compounds during the race (unless it rains).
         </p>
         <div className="space-y-3">
           <div className="bg-red-900/30 border border-red-600/50 rounded-lg p-4">
@@ -446,21 +448,21 @@ function Module3Learn() {
               <div className="w-8 h-8 bg-red-500 rounded-full"></div>
               <h4 className="font-bold">Soft (Red)</h4>
             </div>
-            <p className="text-gray-300 text-sm">Fastest but degrades quickly. 10-20 laps.</p>
+            <p className="text-gray-300 text-sm">Fastest lap times but degrades (wears out) quickly. Typically lasts 10-20 laps.</p>
           </div>
           <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 bg-yellow-400 rounded-full"></div>
               <h4 className="font-bold">Medium (Yellow)</h4>
             </div>
-            <p className="text-gray-300 text-sm">Balanced performance. 20-30 laps.</p>
+            <p className="text-gray-300 text-sm">Balanced performance and durability. The middle ground. Typically lasts 20-30 laps.</p>
           </div>
           <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
               <h4 className="font-bold">Hard (White)</h4>
             </div>
-            <p className="text-gray-300 text-sm">Slowest but lasts longest. 30-40+ laps.</p>
+            <p className="text-gray-300 text-sm">Slowest lap times but lasts longest. Can go 30-40+ laps. Sometimes drivers run the entire race on one set.</p>
           </div>
         </div>
       </div>
@@ -471,22 +473,22 @@ function Module3Learn() {
           <div className="bg-blue-900/30 border border-blue-600/50 rounded-lg p-4">
             <h4 className="font-bold text-lg mb-2">Undercut</h4>
             <p className="text-gray-300">
-              Pit BEFORE your rival. Fresh tires let you go faster and gain track position when they pit.
+              Pit BEFORE your rival. Fresh tires let you set faster lap times. When your rival pits later, you may have gained enough time to come out ahead of them on track.
             </p>
           </div>
           <div className="bg-purple-900/30 border border-purple-600/50 rounded-lg p-4">
             <h4 className="font-bold text-lg mb-2">Overcut</h4>
             <p className="text-gray-300">
-              Stay out LONGER than your rival. Push on old tires while they're in traffic on new tires.
+              Stay out LONGER than your rival. Push hard on your old tires while they're stuck in traffic on their new tires. Less common but can work if track position is crucial.
             </p>
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-2xl font-bold text-red-500 mb-3">Pit Strategy</h3>
+        <h3 className="text-2xl font-bold text-red-500 mb-3">Pit Stop Strategy</h3>
         <p className="text-gray-300">
-          Pit stops take 2-3 seconds but cost 20-25 seconds total. Strategic timing is everything.
+          A pit stop takes 2-3 seconds for the tire change itself, but you lose 20-25 seconds total (including pit entry speed limit and exit). Strategic timing is everything - teams constantly calculate whether to pit now or stay out longer.
         </p>
       </div>
     </div>
@@ -499,7 +501,7 @@ function Module3SeeIt() {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-2xl font-bold text-red-500 mb-4">Strategy Comparison</h3>
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Strategy Comparison: One-Stop vs Two-Stop</h3>
         
         <div className="flex gap-4 mb-6">
           <button
@@ -524,8 +526,8 @@ function Module3SeeIt() {
           {strategy === 'one' ? (
             <div>
               <h4 className="text-xl font-bold mb-3">One-Stop Strategy</h4>
-              <p className="text-gray-300 mb-4">Start on mediums, switch to hards around lap 25-30.</p>
-              <div className="space-y-2">
+              <p className="text-gray-300 mb-4">Start on mediums, switch to hards around lap 25-30. Conservative approach.</p>
+              <div className="space-y-2 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
                   <span>Laps 1-28: Medium tires</span>
@@ -535,16 +537,16 @@ function Module3SeeIt() {
                   <span>Laps 29-55: Hard tires</span>
                 </div>
               </div>
-              <p className="text-gray-400 text-sm mt-4">Lower risk, less time lost in pits, but slower overall pace.</p>
+              <p className="text-gray-400 text-sm">Lower risk, less time lost in pits, but slower overall pace as tires degrade.</p>
             </div>
           ) : (
             <div>
               <h4 className="text-xl font-bold mb-3">Two-Stop Strategy</h4>
-              <p className="text-gray-300 mb-4">Aggressive strategy with fresher tires throughout.</p>
-              <div className="space-y-2">
+              <p className="text-gray-300 mb-4">Aggressive strategy with fresher tires throughout the race.</p>
+              <div className="space-y-2 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                  <span>Laps 1-18: Soft tires</span>
+                  <span>Laps 1-18: Soft tires (fast start)</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
@@ -552,10 +554,10 @@ function Module3SeeIt() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                  <span>Laps 39-55: Soft tires</span>
+                  <span>Laps 39-55: Soft tires (fast finish)</span>
                 </div>
               </div>
-              <p className="text-gray-400 text-sm mt-4">Higher risk, more pit time, but faster overall pace.</p>
+              <p className="text-gray-400 text-sm">Higher risk, more pit time lost (40-50 seconds total), but faster overall pace with fresher tires.</p>
             </div>
           )}
         </div>
@@ -567,37 +569,46 @@ function Module3SeeIt() {
 function Module3TryIt({ quizScore, setQuizScore, onComplete }) {
   const questions = [
     {
-      question: "You're racing your rival. They just pitted. What's the undercut strategy?",
+      question: "You're racing your rival. They just pitted for fresh tires. What is the 'undercut' strategy?",
       options: [
-        { text: "Pit immediately before them", correct: false },
-        { text: "Stay out longer", correct: false },
-        { text: "Already did it - you pit first", correct: true },
+        { text: "Pit immediately after them", correct: false },
+        { text: "Stay out longer on old tires", correct: false },
+        { text: "You already did it - undercut means pitting BEFORE them", correct: true },
       ],
-      explanation: "Undercut means pitting BEFORE your rival to gain advantage with fresh tires."
+      explanation: "Undercut means pitting BEFORE your rival to gain advantage with fresh tires. You set faster lap times while they're still on old tires. When they finally pit, you may have gained enough time to stay ahead."
     },
     {
-      question: "50-lap race. Which strategy is typically faster but riskier?",
+      question: "In a 50-lap race, which strategy is typically faster but riskier?",
       options: [
-        { text: "One stop", correct: false },
-        { text: "Two stop", correct: true },
-        { text: "Zero stop", correct: false },
+        { text: "One stop (less pit time)", correct: false },
+        { text: "Two stop (fresher tires)", correct: true },
+        { text: "Zero stop (ultimate track position)", correct: false },
       ],
-      explanation: "Two stops are faster (fresher tires) but riskier (more pit time, more can go wrong)."
+      explanation: "Two stops give you fresher tires throughout the race, leading to faster lap times. But it's riskier because you lose 40-50 seconds total in the pits, and more things can go wrong (slow stops, safety cars at wrong time)."
     },
     {
-      question: "Lap 20 of 50. Softs are dead, leader 15s ahead on mediums. What do you do?",
+      question: "It's lap 20 of 50. Your soft tires are completely worn out. The leader is 15 seconds ahead on medium tires. What should you do?",
       options: [
-        { text: "Stay out and hope", correct: false },
-        { text: "Pit for mediums", correct: true },
-        { text: "Pit for more softs", correct: false },
+        { text: "Stay out and hope for a safety car", correct: false },
+        { text: "Pit for fresh medium tires now", correct: true },
+        { text: "Pit for another set of soft tires", correct: false },
       ],
-      explanation: "Dead tires lose seconds per lap. Pit for mediums to stay competitive."
+      explanation: "Dead tires lose multiple seconds per lap. You need to pit for mediums to stay competitive. Staying out will cost you way more than the 20-25 seconds a pit stop takes. More softs would degrade too quickly again."
     },
   ];
 
   return <QuizComponent questions={questions} quizScore={quizScore} setQuizScore={setQuizScore} onComplete={onComplete} />;
 }
 
+function Module3({ onComplete }) {
+  const sections = [
+    { id: 'learn', label: 'Learn', icon: BookOpen },
+    { id: 'seeIt', label: 'See It', icon: Eye },
+    { id: 'tryIt', label: 'Try It', icon: Trophy },
+  ];
+
+  return <ModuleTemplate moduleNumber={3} title="Race Strategy" sections={sections} LearnComponent={Module3Learn} SeeItComponent={Module3SeeIt} TryItComponent={Module3TryIt} onComplete={onComplete} />;
+}
 function QuizComponent({ questions, quizScore, setQuizScore, onComplete }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -607,7 +618,7 @@ function QuizComponent({ questions, quizScore, setQuizScore, onComplete }) {
     setSelectedAnswer(index);
     setShowFeedback(true);
     if (questions[currentQuestion].options[index].correct) {
-      setQuizScore(prev => (prev || 0) + 1);
+      setQuizScore(prev => prev + 1);
     }
   };
 
@@ -616,20 +627,27 @@ function QuizComponent({ questions, quizScore, setQuizScore, onComplete }) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
       setShowFeedback(false);
-    } else {
-      onComplete();
     }
+  };
+
+  const handleComplete = () => {
+    onComplete();
+    setTimeout(() => {
+      setCurrentQuestion(questions.length - 1);
+      setShowFeedback(true);
+    }, 100);
   };
 
   const handleReset = () => {
     setCurrentQuestion(0);
     setSelectedAnswer(null);
     setShowFeedback(false);
-    setQuizScore(null);
+    setQuizScore(0);
   };
 
   const currentQ = questions[currentQuestion];
-  const isComplete = currentQuestion === questions.length - 1 && showFeedback;
+  const isLastQuestion = currentQuestion === questions.length - 1;
+  const isComplete = isLastQuestion && showFeedback && selectedAnswer !== null;
 
   return (
     <div className="space-y-6">
@@ -665,7 +683,14 @@ function QuizComponent({ questions, quizScore, setQuizScore, onComplete }) {
                       : 'bg-black/40 border-red-600/30 hover:border-red-500 hover:bg-black/60'
                   } ${showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
-                  {option.text}
+                  <div className="flex items-center justify-between">
+                    <span>{option.text}</span>
+                    {showResult && (
+                      isCorrect ? 
+                        <CheckCircle className="w-6 h-6 text-green-500" /> : 
+                        <XCircle className="w-6 h-6 text-red-500" />
+                    )}
+                  </div>
                 </button>
               );
             })}
@@ -674,13 +699,22 @@ function QuizComponent({ questions, quizScore, setQuizScore, onComplete }) {
           {showFeedback && (
             <div className="bg-blue-950/30 border border-blue-600/50 rounded-lg p-6">
               <h4 className="font-bold mb-2 text-blue-400">Explanation:</h4>
-              <p className="text-gray-300">{currentQ.explanation}</p>
-              <button
-                onClick={handleNext}
-                className="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
-              >
-                {currentQuestion < questions.length - 1 ? 'Next Question' : 'Complete Module'}
-              </button>
+              <p className="text-gray-300 mb-4">{currentQ.explanation}</p>
+              {!isLastQuestion ? (
+                <button
+                  onClick={handleNext}
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                >
+                  Next Question
+                </button>
+              ) : (
+                <button
+                  onClick={handleComplete}
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                >
+                  Complete Module
+                </button>
+              )}
             </div>
           )}
         </>
